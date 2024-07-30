@@ -2,8 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
+use App\Models\Admin;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,30 +16,36 @@ class AuthenticationTest extends TestCase
 
     public function test_login_screen_can_be_rendered(): void
     {
-        $response = $this->get('/login');
+        $response = $this->get('/admin/login');
 
         $response->assertStatus(200);
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $admin = new Admin();
+        $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
-        $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
+        $response = $this->post('/admin/login', [
+            'email' => $admin->email,
+            'password' => 'nagoyamehsi',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $this->assertTrue(Auth::guard('admin')->check());
+        $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
-        $user = User::factory()->create();
+        $admin = new Admin();
+        $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
-        $this->post('/login', [
-            'email' => $user->email,
+        $this->post('/admin/login', [
+            'email' => $admin->email,
             'password' => 'wrong-password',
         ]);
 
@@ -45,9 +54,12 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_logout(): void
     {
-        $user = User::factory()->create();
+        $admin = new Admin();
+        $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
-        $response = $this->actingAs($user)->post('/logout');
+        $response = $this->actingAs($admin, 'admin')->post('/admin/logout');
 
         $this->assertGuest();
         $response->assertRedirect('/');
