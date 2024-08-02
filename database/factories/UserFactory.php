@@ -43,17 +43,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create('ja_JP'); // 日本語ロケールを設定
+
         return [
-            'name' => fake()->name(),
-            'kana' => fake()->kanaName(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $faker->name(),
+            'kana' => $faker->name(), // カスタムロジックが必要な場合は修正
+            'email' => $faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('password'), // static変数の使用を避けて簡略化
             'remember_token' => Str::random(10),
-            'postal_code' => fake()->postcode(),
-            'address' => fake()->address(),
-            'phone_number' => fake()->phoneNumber(),
-        ];
+            'postal_code' => $faker->postcode(),
+            'address' => $faker->address(),
+            'phone_number' => $faker->phoneNumber(),
+        ];    
     }
 
     /**
