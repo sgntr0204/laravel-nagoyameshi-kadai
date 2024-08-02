@@ -35,6 +35,7 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
+// 管理者用トップページ
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
     
@@ -45,8 +46,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin
 // });
 
 Route::middleware(['auth', 'verified', 'can:admin'])->group(function () {
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
-    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 });
 
 

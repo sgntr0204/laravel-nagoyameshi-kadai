@@ -55,9 +55,9 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return bool
      */
-    public function isAdmin()
-    {
-        return $this->is_admin; // is_admin カラムが存在する場合
-    }
+    // public function isAdmin()
+    // {
+    //     return $this->is_admin; // is_admin カラムが存在する場合
+    // }
 
 }
