@@ -3,9 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Faker\Factory as FakerFactory;
+
 // use Faker\Generator as Faker;
 
 
@@ -43,20 +44,22 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $faker = \Faker\Factory::create('ja_JP'); // 日本語ロケールを設定
 
+        
+        $faker = FakerFactory::create();
+        
         return [
             'name' => $faker->name(),
-            'kana' => $faker->name(), // カスタムロジックが必要な場合は修正
+            'kana' => $faker->name(), // 'kanaName'メソッドは存在しないので、必要に応じてカスタムロジックが必要かもしれません
             'email' => $faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => Hash::make('password'), // static変数の使用を避けて簡略化
+            'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'postal_code' => $faker->postcode(),
             'address' => $faker->address(),
             'phone_number' => $faker->phoneNumber(),
-        ];    
-    }
+        ];
+            }
 
     /**
      * Indicate that the model's email address should be unverified.
