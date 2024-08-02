@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
      // 100人のユーザーを作成
          User::factory()->count(100)->create();
 
+        // //  固定のユーザー
         // $user = new User();
         // $user->email = 'user@example.com';
         // $user->password = Hash::make('password');

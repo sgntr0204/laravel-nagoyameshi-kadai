@@ -3,6 +3,9 @@
 // use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\HomeController;
+
 
 
 /*
@@ -32,6 +35,20 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
+// 管理者用トップページ
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [Admin\HomeController::class, 'index'])->name('home');
+    
 });
+
+// Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(function () {
+//     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+// });
+
+Route::middleware(['auth', 'verified', 'can:admin'])->group(function () {
+    Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('users/{user}', [UserController::class, 'show'])->name('admin.users.show');
+});
+
+
+
